@@ -16,6 +16,7 @@
     }
   },
   "scripts": {
+    "test": "jest",
     "prepublishOnly": "npm run build",
     "dev": "npm-run-all --parallel 'build:** -- --watch'",
     "build": "npm-run-all --parallel build:** && npm run types",

@@ -24,7 +24,7 @@
     "build:js": "vite build",
     "build:source": "tsc",
     "types": "tsc --emitDeclarationOnly --declaration --outDir ./dist/types",
-    "publish": "release-it"
+    "release": "release-it"
   },
   "release-it": {
     "git": {

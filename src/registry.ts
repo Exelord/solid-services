@@ -6,13 +6,16 @@ export interface Registry {
   has<T>(initializer: ServiceInitializer<T>): boolean;
   get<T>(initializer: ServiceInitializer<T>): T | undefined;
   register<T>(initializer: ServiceInitializer<T>): T;
+  clear(): void;
 }
 
 export function createRegistry(): Registry {
   const cache = new Map<ServiceInitializer<any>, any>();
   const owner = getOwner();
 
-  onCleanup(() => cache.clear());
+  if (owner) {
+    onCleanup(() => cache.clear());
+  }
 
   function has<T>(initializer: ServiceInitializer<T>) {
     return cache.has(initializer);
@@ -20,6 +23,10 @@ export function createRegistry(): Registry {
 
   function get<T>(initializer: ServiceInitializer<T>) {
     return cache.get(initializer);
+  }
+
+  function clear() {
+    cache.clear();
   }
 
   function register<T>(initializer: ServiceInitializer<T>) {
@@ -32,5 +39,5 @@ export function createRegistry(): Registry {
     return registration;
   }
 
-  return { has, get, register } as const;
+  return { has, get, register, clear } as const;
 }

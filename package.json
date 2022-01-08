@@ -1,0 +1,37 @@
+{
+  "name": "solid-services",
+  "version": "0.0.0",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.es.js",
+  "types": "./dist/types/index.d.ts",
+  "source": "./dist/src/index.js",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs.js"
+    }
+  },
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "dev": "npm-run-all --parallel 'build:** -- --watch'",
+    "build": "npm-run-all --parallel build:** && npm run types",
+    "build:js": "vite build",
+    "build:source": "tsc",
+    "types": "tsc --emitDeclarationOnly --declaration --outDir ./dist/types"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.0",
+    "jest": "^27.4.7",
+    "npm-run-all": "^4.1.5",
+    "ts-jest": "^27.1.2",
+    "typescript": "^4.4.4",
+    "vite": "^2.7.2"
+  },
+  "dependencies": {
+    "solid-js": "^1.3.1"
+  }
+}

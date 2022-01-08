@@ -23,7 +23,8 @@
     "build": "npm-run-all --parallel build:** && npm run types",
     "build:js": "vite build",
     "build:source": "tsc",
-    "types": "tsc --emitDeclarationOnly --declaration --outDir ./dist/types"
+    "types": "tsc --emitDeclarationOnly --declaration --outDir ./dist/types",
+    "publish": "release-it"
   },
   "release-it": {
     "git": {

@@ -10,7 +10,7 @@ Services are "global" objects useful for features that require shared state or p
 - Geolocation
 - WebSockets
 - Server-sent events or notifications
-- Server-backed API calls that may not fit Ember Data
+- Server-backed API calls libraries
 - Third-party APIs
 - Logging
 

@@ -13,12 +13,12 @@ describe("useService", () => {
     const MyComponent = () => {
       const myService = useService(MyService);
 
-      expect(myService).toMatchObject({ service: "my" });
+      expect(myService()).toMatchObject({ service: "my" });
       expect(spy).toBeCalledTimes(1);
 
       const myServiceAgain = useService(MyService);
 
-      expect(myServiceAgain).toBe(myService);
+      expect(myServiceAgain()).toBe(myService());
       expect(spy).toBeCalledTimes(1);
 
       return undefined;

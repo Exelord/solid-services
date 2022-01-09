@@ -86,7 +86,7 @@ export default function LogoutComponent() {
   const authService = useService(AuthService)
   
   function logout() {
-    authService.logout();  
+    authService().logout();  
   }
   
   return <button onClick={logout}>Logout<button>

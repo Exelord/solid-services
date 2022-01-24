@@ -64,7 +64,7 @@ export function AuthService() {
 
     login(user) {
       setUser(user);
-    }
+    },
 
     logout() {
       setUser(undefined)

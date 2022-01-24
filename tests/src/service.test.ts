@@ -1,9 +1,10 @@
+import { describe, test, expect, vi } from "vitest";
 import { createComponent } from "solid-js";
 import { useService } from "../../src/service";
 
 describe("useService", () => {
-  it("registers a service if it does not exist", () => {
-    const spy = jest.fn();
+  test("registers a service if it does not exist", () => {
+    const spy = vi.fn();
 
     const MyService = () => {
       spy();

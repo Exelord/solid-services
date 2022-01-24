@@ -1,7 +1,8 @@
+import { describe, test, expect, vi } from "vitest";
 import { createRegistry } from "../../src/registry";
 
 describe("createRegistry", () => {
-  it("registers a service", () => {
+  test("registers a service", () => {
     const MyService = () => {
       return { my: "service" };
     };
@@ -12,8 +13,8 @@ describe("createRegistry", () => {
     expect(myService).toMatchObject({ my: "service" });
   });
 
-  it("gets already registered service", () => {
-    const spy = jest.fn();
+  test("gets already registered service", () => {
+    const spy = vi.fn();
 
     const MyService = () => {
       spy();
@@ -29,7 +30,7 @@ describe("createRegistry", () => {
     expect(spy).toBeCalledTimes(1);
   });
 
-  it("check if service is already registered", () => {
+  test("check if service is already registered", () => {
     const MyService = () => {
       return { my: "service" };
     };

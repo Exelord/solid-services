@@ -1,8 +1,9 @@
+import { describe, test, expect } from "vitest";
 import { createComponent } from "solid-js";
 import { ServiceRegistry, useRegistry } from "../../src/context";
 
 describe("ServiceRegistry", () => {
-  it("creates a context", () => {
+  test("creates a context", () => {
     const GlobalService = () => {
       return { service: "global" };
     };

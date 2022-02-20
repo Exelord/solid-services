@@ -2,6 +2,21 @@
   "name": "solid-services",
   "description": "Solid.js library adding a services layer for global shared state.",
   "version": "2.0.0",
+  "license": "MIT",
+  "homepage": "https://github.com/Exelord/solid-services",
+  "repository": "github:exelord/solid-services",
+  "keywords": [
+    "solidhack",
+    "best_ecosystem",
+    "solidjs"
+  ],
+  "contributors": [
+    {
+      "name": "Maciej Kwaśniak",
+      "email": "contact@exelord.com",
+      "url": "https://exelord.com"
+    }
+  ],
   "files": [
     "dist"
   ],

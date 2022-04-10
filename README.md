@@ -34,8 +34,6 @@ npm i solid-services
 
 `ServiceRegistry` will create a context around your components allowing you to scope the services to specific part of the application.
 
-By default, you don't need to do anything as your application will use a global registry. However, if you plan to run a few apps on one page it might be good idea to isolate their services states.
-
 ```tsx
 // app.tsx
 import { ServiceRegistry } from 'solid-services';

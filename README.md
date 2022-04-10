@@ -4,7 +4,9 @@
 
 # Solid Services
 
-Services are "global" objects useful for features that require shared state or persistent connections. Example uses of services might include:
+Services are "global" objects useful for features that require shared state or persistent connections. They are lazy evaluated, only when used, solving an issue of cross dependencies and contexts tree.
+
+Example uses of services might include:
 
 - User/session authentication
 - Geolocation

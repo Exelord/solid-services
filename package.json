@@ -5,6 +5,7 @@
   "license": "MIT",
   "homepage": "https://github.com/Exelord/solid-services",
   "repository": "github:exelord/solid-services",
+  "info": "Services are global objects useful for features that require shared state or persistent connections. They are lazy evaluated, only when used, solving an issue of cross dependencies and contexts tree.",
   "keywords": [
     "solidhack",
     "best_ecosystem",

@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "useDefineForClassFields": true,
     "module": "ESNext",
+    "useDefineForClassFields": true,
     "lib": ["ESNext", "DOM"],
     "moduleResolution": "Node",
     "outDir": "./dist/src",
@@ -16,7 +16,15 @@
     "isolatedModules": true,
     "noImplicitAny": true,
     "strictFunctionTypes": true,
-    "strictPropertyInitialization": true
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "strictNullChecks": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
   },
   "include": ["./src"]
 }

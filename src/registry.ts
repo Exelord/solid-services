@@ -1,11 +1,13 @@
 import { onCleanup, getOwner, runWithOwner } from "solid-js";
 
-export type ServiceInitializer<T> = () => T;
+export type ServiceInitializer<T extends Service> = () => T;
+
+export interface Service {}
 
 export interface Registry {
-  has<T>(initializer: ServiceInitializer<T>): boolean;
-  get<T>(initializer: ServiceInitializer<T>): T | undefined;
-  register<T>(initializer: ServiceInitializer<T>): T;
+  has<T extends Service>(initializer: ServiceInitializer<T>): boolean;
+  get<T extends Service>(initializer: ServiceInitializer<T>): T | undefined;
+  register<T extends Service>(initializer: ServiceInitializer<T>): T;
   clear(): void;
 }
 

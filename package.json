@@ -57,7 +57,7 @@
     },
     "hooks": {
       "before:init": [
-        "npm test"
+        "npm test -- --run"
       ]
     }
   },

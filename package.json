@@ -1,10 +1,11 @@
 {
   "name": "solid-services",
   "description": "Solid.js library adding a services layer for global shared state.",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "license": "MIT",
   "homepage": "https://github.com/Exelord/solid-services",
   "repository": "github:exelord/solid-services",
+  "info": "Services are global objects useful for features that require shared state or persistent connections. They are lazy evaluated, only when used, solving an issue of cross dependencies and contexts tree.",
   "keywords": [
     "solidhack",
     "best_ecosystem",
@@ -56,19 +57,19 @@
     },
     "hooks": {
       "before:init": [
-        "npm test"
+        "npm test -- --run"
       ]
     }
   },
   "devDependencies": {
     "c8": "^7.11.0",
     "npm-run-all": "^4.1.5",
-    "release-it": "^14.12.4",
-    "typescript": "^4.5.5",
-    "vite": "^2.7.13",
-    "vitest": "^0.5.0"
+    "release-it": "^14.14.1",
+    "typescript": "^4.6.3",
+    "vite": "^2.9.1",
+    "vitest": "^0.9.3"
   },
   "dependencies": {
-    "solid-js": "^1.3.3"
+    "solid-js": "^1.3.14"
   }
 }

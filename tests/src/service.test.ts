@@ -1,6 +1,7 @@
 import { describe, test, expect, vi } from "vitest";
 import { createComponent } from "solid-js";
 import { useService } from "../../src/service";
+import { ServiceRegistry } from "../../src/context";
 
 describe("useService", () => {
   test("registers a service if it does not exist", () => {
@@ -25,6 +26,10 @@ describe("useService", () => {
       return undefined;
     };
 
-    createComponent(MyComponent, {});
+    createComponent(ServiceRegistry, {
+      get children() {
+        return createComponent(MyComponent, {});
+      },
+    });
   });
 });

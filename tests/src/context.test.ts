@@ -1,6 +1,7 @@
 import { describe, test, expect } from "vitest";
 import { createComponent } from "solid-js";
 import { ServiceRegistry, useRegistry } from "../../src/context";
+import { Registry } from "../../src/registry";
 
 describe("ServiceRegistry", () => {
   test("creates a context", () => {
@@ -25,13 +26,33 @@ describe("ServiceRegistry", () => {
       return undefined;
     };
 
-    const globalRegistry = useRegistry();
+    const globalRegistry = new Registry();
     globalRegistry.register(GlobalService);
 
     createComponent(ServiceRegistry, {
+      get registry() {
+        return globalRegistry;
+      },
+
       get children() {
-        return createComponent(MyComponent, {});
+        return createComponent(ServiceRegistry, {
+          get children() {
+            return createComponent(MyComponent, {});
+          },
+        });
       },
     });
+  });
+
+  test("throws error when used without the registry provider", () => {
+    const MyComponent = () => {
+      expect(() => useRegistry()).toThrowError(
+        "Your app needs to be wrapped with <ServiceRegistry> context in order to use services!"
+      );
+
+      return undefined;
+    };
+
+    createComponent(MyComponent, {});
   });
 });

@@ -13,7 +13,7 @@ export type RegistryProviderProps = {
   registry?: Registry;
 };
 
-const ServiceRegistryContext = createContext(createRegistry());
+const ServiceRegistryContext = createContext<Registry>();
 
 export const ServiceRegistry: Component<RegistryProviderProps> = (props) => {
   const registry = createMemo(() => props.registry || createRegistry());
@@ -29,6 +29,12 @@ export const ServiceRegistry: Component<RegistryProviderProps> = (props) => {
   });
 };
 
-export function useRegistry() {
-  return useContext(ServiceRegistryContext);
+export function useRegistry(): Registry {
+  const registry = useContext(ServiceRegistryContext);
+
+  if (registry) return registry;
+
+  throw new Error(
+    "Your app needs to be wrapped with <ServiceRegistry> context in order to use services!"
+  );
 }

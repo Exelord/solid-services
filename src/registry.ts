@@ -1,43 +1,46 @@
 import { onCleanup, getOwner, runWithOwner } from "solid-js";
+import { Owner } from "solid-js/types/reactive/signal";
 
-export type ServiceInitializer<T> = () => T;
+export interface Service extends Record<any, any> {}
 
-export interface Registry {
-  has<T>(initializer: ServiceInitializer<T>): boolean;
-  get<T>(initializer: ServiceInitializer<T>): T | undefined;
-  register<T>(initializer: ServiceInitializer<T>): T;
-  clear(): void;
-}
+export type ServiceInitializer<T extends Service> = () => T;
 
-export function createRegistry(): Registry {
-  const cache = new Map<ServiceInitializer<any>, any>();
-  const owner = getOwner();
+export class Registry {
+  #owner: Owner | null;
+  #cache: Map<ServiceInitializer<any>, any>;
 
-  if (owner) {
-    onCleanup(() => cache.clear());
+  constructor() {
+    this.#owner = getOwner();
+    this.#cache = new Map<ServiceInitializer<any>, any>();
+
+    if (this.#owner) {
+      onCleanup(() => this.#cache.clear());
+    }
   }
 
-  function has<T>(initializer: ServiceInitializer<T>) {
-    return cache.has(initializer);
+  has<T extends Service>(initializer: ServiceInitializer<T>): boolean {
+    return this.#cache.has(initializer);
   }
 
-  function get<T>(initializer: ServiceInitializer<T>) {
-    return cache.get(initializer);
+  get<T extends Service>(initializer: ServiceInitializer<T>): T | undefined {
+    return this.#cache.get(initializer);
   }
 
-  function clear() {
-    cache.clear();
+  clear(): void {
+    this.#cache.clear();
   }
 
-  function register<T>(initializer: ServiceInitializer<T>) {
-    const registration = owner
-      ? runWithOwner(owner, () => initializer())
+  register<T extends Service>(initializer: ServiceInitializer<T>): T {
+    const registration = this.#owner
+      ? runWithOwner(this.#owner, () => initializer())
       : initializer();
 
-    cache.set(initializer, registration);
+    this.#cache.set(initializer, registration);
 
     return registration;
   }
+}
 
-  return { has, get, register, clear } as const;
+export function createRegistry(): Registry {
+  return new Registry();
 }

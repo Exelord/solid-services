@@ -4,7 +4,9 @@
 
 # Solid Services
 
-Services are "global" objects useful for features that require shared state or persistent connections. Example uses of services might include:
+Services are "global" objects useful for features that require shared state or persistent connections. They are lazy evaluated, only when used, solving an issue of cross dependencies and contexts tree.
+
+Example uses of services might include:
 
 - User/session authentication
 - Geolocation
@@ -31,8 +33,6 @@ npm i solid-services
 ## Using a ServiceRegistry
 
 `ServiceRegistry` will create a context around your components allowing you to scope the services to specific part of the application.
-
-By default, you don't need to do anything as your application will use a global registry. However, if you plan to run a few apps on one page it might be good idea to isolate their services states.
 
 ```tsx
 // app.tsx

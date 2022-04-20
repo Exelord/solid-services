@@ -65,5 +65,7 @@ describe("useService", () => {
         return createComponent(MyComponent, {});
       },
     });
+
+    expect(spy).toBeCalledWith("Hello");
   });
 });

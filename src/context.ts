@@ -1,14 +1,11 @@
 import { createRegistry } from "./registry";
 import type { Registry } from "./registry";
-import { Owner } from "solid-js/types/reactive/signal";
 
 import {
   createContext,
   Component,
-  getOwner,
   createComponent,
   useContext,
-  runWithOwner,
 } from "solid-js";
 
 export type RegistryProviderProps = {
@@ -19,19 +16,15 @@ const ServiceRegistryContext = createContext<Registry>();
 
 export const ServiceRegistry: Component<RegistryProviderProps> = (props) => {
   let defaultRegistry: Registry;
-  const owner = getOwner();
 
-  function getOrCreateRegistry(owner: Owner | null) {
-    defaultRegistry ??= owner
-      ? runWithOwner(owner, () => createRegistry())
-      : createRegistry();
-
+  function getOrCreateRegistry() {
+    defaultRegistry ??= createRegistry();
     return defaultRegistry;
   }
 
   return createComponent(ServiceRegistryContext.Provider, {
     get value() {
-      return props.registry || getOrCreateRegistry(owner);
+      return props.registry || getOrCreateRegistry();
     },
 
     get children() {

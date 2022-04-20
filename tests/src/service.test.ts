@@ -32,4 +32,38 @@ describe("useService", () => {
       },
     });
   });
+
+  test("works with nested services", () => {
+    const spy = vi.fn();
+
+    function Service2() {
+      return {
+        get value() {
+          return "Hello";
+        },
+      };
+    }
+
+    function Service1() {
+      const service2 = useService(Service2);
+
+      return {
+        get value() {
+          return service2().value;
+        },
+      };
+    }
+
+    function MyComponent() {
+      const service = useService(Service1);
+      spy(service().value);
+      return undefined;
+    }
+
+    createComponent(ServiceRegistry, {
+      get children() {
+        return createComponent(MyComponent, {});
+      },
+    });
+  });
 });

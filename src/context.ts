@@ -3,9 +3,9 @@ import type { Registry } from "./registry";
 
 import {
   createContext,
-  Component,
   createComponent,
   useContext,
+  FlowComponent,
 } from "solid-js";
 
 export type RegistryProviderProps = {
@@ -14,7 +14,9 @@ export type RegistryProviderProps = {
 
 const ServiceRegistryContext = createContext<Registry>();
 
-export const ServiceRegistry: Component<RegistryProviderProps> = (props) => {
+export const ServiceRegistry: FlowComponent<RegistryProviderProps> = (
+  props
+) => {
   let defaultRegistry: Registry;
 
   function getOrCreateRegistry() {

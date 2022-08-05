@@ -38,9 +38,11 @@ export const ServiceRegistry: FlowComponent<RegistryProviderProps> = (
 export function useRegistry(): Registry {
   const registry = useContext(ServiceRegistryContext);
 
-  if (registry) return registry;
+  if (!registry) {
+    throw new Error(
+      "Your app needs to be wrapped with <ServiceRegistry> context in order to use services."
+    );
+  }
 
-  throw new Error(
-    "Your app needs to be wrapped with <ServiceRegistry> context in order to use services!"
-  );
+  return registry;
 }

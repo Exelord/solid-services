@@ -47,7 +47,7 @@ describe("ServiceRegistry", () => {
   test("throws error when used without the registry provider", () => {
     const MyComponent = () => {
       expect(() => useRegistry()).toThrowError(
-        "Your app needs to be wrapped with <ServiceRegistry> context in order to use services!"
+        "Your app needs to be wrapped with <ServiceRegistry> context in order to use services."
       );
 
       return undefined;

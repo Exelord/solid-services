@@ -1,4 +1,4 @@
-import { onCleanup, getOwner, runWithOwner } from "solid-js";
+import { getOwner, runWithOwner } from "solid-js";
 import { Owner } from "solid-js/types/reactive/signal";
 
 export interface Service extends Record<any, any> {}
@@ -12,10 +12,6 @@ export class Registry {
   constructor() {
     this.#owner = getOwner();
     this.#cache = new Map<ServiceInitializer<any>, any>();
-
-    if (this.#owner) {
-      onCleanup(() => this.#cache.clear());
-    }
   }
 
   has<T extends Service>(initializer: ServiceInitializer<T>): boolean {

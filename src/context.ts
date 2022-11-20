@@ -1,4 +1,4 @@
-import { createRegistry } from "./registry";
+import { createRegistry, ServiceInitializer } from "./registry";
 import type { Registry } from "./registry";
 
 import {
@@ -9,25 +9,18 @@ import {
 } from "solid-js";
 
 export type RegistryProviderProps = {
-  registry?: Registry;
+  expose?: ServiceInitializer<any>[];
 };
 
-const ServiceRegistryContext = createContext<Registry>();
+export const ServiceRegistryContext = createContext<Registry>();
 
-export const ServiceRegistry: FlowComponent<RegistryProviderProps> = (
-  props
-) => {
-  let defaultRegistry: Registry;
-
-  function getOrCreateRegistry() {
-    defaultRegistry ??= createRegistry();
-    return defaultRegistry;
-  }
-
+export const ServiceRegistry: FlowComponent<RegistryProviderProps> = (props) => {
   return createComponent(ServiceRegistryContext.Provider, {
-    get value() {
-      return props.registry || getOrCreateRegistry();
-    },
+    value: createRegistry({
+      get expose() {
+        return props.expose;
+      },
+    }),
 
     get children() {
       return props.children;

@@ -1,11 +1,14 @@
 import { describe, test, expect } from "vitest";
 import { createComponent } from "solid-js";
 import { ServiceRegistry, useRegistry } from "../../src/context";
-import { Registry } from "../../src/registry";
 
 describe("ServiceRegistry", () => {
-  test("creates a context", () => {
+  test("allows to expose services", () => {
     const GlobalService = () => {
+      return { service: "global" };
+    };
+
+    const DelegatedService = () => {
       return { service: "global" };
     };
 
@@ -13,33 +16,50 @@ describe("ServiceRegistry", () => {
       return { service: "local" };
     };
 
-    const MyComponent = () => {
-      const registry = useRegistry();
-      registry.register(LocalService);
-
-      expect(registry.has(LocalService)).toBe(true);
-      expect(registry.has(GlobalService)).toBe(false);
-
-      expect(globalRegistry.has(LocalService)).toBe(false);
-      expect(globalRegistry.has(GlobalService)).toBe(true);
-
-      return undefined;
-    };
-
-    const globalRegistry = new Registry();
-    globalRegistry.register(GlobalService);
-
     createComponent(ServiceRegistry, {
-      get registry() {
-        return globalRegistry;
+      get expose() {
+        return [GlobalService, DelegatedService];
       },
 
       get children() {
-        return createComponent(ServiceRegistry, {
-          get children() {
-            return createComponent(MyComponent, {});
-          },
-        });
+        return [
+          createComponent(() => {
+            const registry = useRegistry();
+            registry.register(GlobalService);
+            registry.register(DelegatedService);
+            return undefined;
+          }, {}),
+          createComponent(ServiceRegistry, {
+            get expose() {
+              return [DelegatedService];
+            },
+
+            get children() {
+              return [
+                createComponent(() => {
+                  const registry = useRegistry();
+                  expect(registry.has(DelegatedService)).toBe(true);
+                  expect(registry.has(GlobalService)).toBe(true);
+                  return undefined;
+                }, {}),
+                createComponent(ServiceRegistry, {
+                  get children() {
+                    return createComponent(() => {
+                      const registry = useRegistry();
+                      registry.register(LocalService);
+
+                      expect(registry.has(LocalService)).toBe(true);
+                      expect(registry.has(DelegatedService)).toBe(true);
+                      expect(registry.has(GlobalService)).toBe(false);
+
+                      return undefined;
+                    }, {});
+                  },
+                }),
+              ];
+            },
+          }),
+        ];
       },
     });
   });

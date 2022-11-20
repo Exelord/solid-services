@@ -92,3 +92,44 @@ export default function LogoutComponent() {
   return <button onClick={logout}>Logout<button>
 }
 ```
+
+## Exposing services to sub registries
+
+By default registry does not expose any services to sub registries. It means that they cannot access or use services from the parent registry. You can configure this behavior by using `expose` property of `ServiceRegistry` and choose which services should be shared with sub registries.
+
+Example of isolated services:
+
+```tsx
+import { ServiceRegistry } from 'solid-services';
+
+export default App() {
+  return (
+    <ServiceRegistry>
+      // Here you can access all services defined in this registry
+
+      <ServiceRegistry>
+        // Here you cannot access services defined in the parent registry
+      <ServiceRegistry>
+    </ServiceRegistry>
+  )
+}
+```
+
+Example of exposed services:
+
+```tsx
+import { ServiceRegistry } from 'solid-services';
+import AuthService from "../services/auth";
+
+export default App() {
+  return (
+    <ServiceRegistry expose={[AuthService]}>
+      // Here you can access all services defined in this registry
+
+      <ServiceRegistry>
+        // Here you can access services defined in this registry + the AuthService from parent registry
+      <ServiceRegistry>
+    </ServiceRegistry>
+  )
+}
+```

@@ -9,7 +9,7 @@ import {
 } from "solid-js";
 
 export type RegistryProviderProps = {
-  expose?: ServiceInitializer<any>[];
+  expose?: ServiceInitializer<any>[] | boolean;
 };
 
 export const ServiceRegistryContext = createContext<Registry>();

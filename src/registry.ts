@@ -7,7 +7,7 @@ export interface Service extends Record<any, any> {}
 export type ServiceInitializer<T extends Service> = () => T;
 
 export interface RegistryConfig {
-  expose?: ServiceInitializer<any>[];
+  expose?: ServiceInitializer<any>[] | boolean;
 }
 
 export class Registry {
@@ -25,7 +25,11 @@ export class Registry {
   has<T extends Service>(initializer: ServiceInitializer<T>): boolean {
     const parentRegistry = this.getParentRegistry();
 
-    if (parentRegistry && parentRegistry.config.expose?.includes(initializer)) {
+    if (
+      parentRegistry &&
+      (parentRegistry.config.expose === true ||
+        parentRegistry.config.expose?.includes(initializer))
+    ) {
       return parentRegistry.has(initializer);
     }
 
@@ -35,7 +39,11 @@ export class Registry {
   get<T extends Service>(initializer: ServiceInitializer<T>): T | undefined {
     const parentRegistry = this.getParentRegistry();
 
-    if (parentRegistry && parentRegistry.config.expose?.includes(initializer)) {
+    if (
+      parentRegistry &&
+      (parentRegistry.config.expose === true ||
+        parentRegistry.config.expose?.includes(initializer))
+    ) {
       return parentRegistry.get(initializer);
     }
 
@@ -49,7 +57,11 @@ export class Registry {
   register<T extends Service>(initializer: ServiceInitializer<T>): T {
     const parentRegistry = this.getParentRegistry();
 
-    if (parentRegistry && parentRegistry.config.expose?.includes(initializer)) {
+    if (
+      parentRegistry &&
+      (parentRegistry.config.expose === true ||
+        parentRegistry.config.expose?.includes(initializer))
+    ) {
       return parentRegistry.register(initializer);
     }
 

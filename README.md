@@ -133,3 +133,28 @@ export default App() {
   )
 }
 ```
+
+You can also set the `expose` to `true` to expose all services to sub-registries.
+It can be useful to granularly control services between different areas.
+
+```tsx
+import { ServiceRegistry } from 'solid-services';
+import AuthService from "../services/auth";
+
+export default App() {
+  return (
+    <ServiceRegistry expose={true}>
+      // Here you can access all services defined in this registry
+
+      <ServiceRegistry>
+        // Here you will access directly parent registry making this registry just a proxy to a parent
+        // Use case: In case the parent registry will not exist, you can make sure to be able to use services
+      <ServiceRegistry>
+
+      <ServiceRegistry expose={[AuthService]}>
+        // In this context you will have an access to AuthService and any other service will be isolated
+      <ServiceRegistry>
+    </ServiceRegistry>
+  )
+}
+```

@@ -12,12 +12,11 @@ export interface RegistryConfig {
 
 export class Registry {
   #owner: Owner | null;
+  #config: RegistryConfig;
   #cache: Map<ServiceInitializer<any>, any>;
 
-  readonly config: RegistryConfig;
-
   constructor(config: RegistryConfig = {}) {
-    this.config = config;
+    this.#config = config;
     this.#owner = getOwner();
     this.#cache = new Map<ServiceInitializer<any>, any>();
   }
@@ -25,12 +24,7 @@ export class Registry {
   has<T extends Service>(initializer: ServiceInitializer<T>): boolean {
     const parentRegistry = this.getParentRegistry();
 
-    if (
-      parentRegistry &&
-      (parentRegistry.config.expose === true ||
-        (Array.isArray(parentRegistry.config.expose) &&
-          parentRegistry.config.expose?.includes(initializer)))
-    ) {
+    if (parentRegistry?.isExposing(initializer)) {
       return parentRegistry.has(initializer);
     }
 
@@ -40,12 +34,7 @@ export class Registry {
   get<T extends Service>(initializer: ServiceInitializer<T>): T | undefined {
     const parentRegistry = this.getParentRegistry();
 
-    if (
-      parentRegistry &&
-      (parentRegistry.config.expose === true ||
-        (Array.isArray(parentRegistry.config.expose) &&
-          parentRegistry.config.expose?.includes(initializer)))
-    ) {
+    if (parentRegistry?.isExposing(initializer)) {
       return parentRegistry.get(initializer);
     }
 
@@ -59,12 +48,7 @@ export class Registry {
   register<T extends Service>(initializer: ServiceInitializer<T>): T {
     const parentRegistry = this.getParentRegistry();
 
-    if (
-      parentRegistry &&
-      (parentRegistry.config.expose === true ||
-        (Array.isArray(parentRegistry.config.expose) &&
-          parentRegistry.config.expose?.includes(initializer)))
-    ) {
+    if (parentRegistry?.isExposing(initializer)) {
       return parentRegistry.register(initializer);
     }
 
@@ -75,6 +59,16 @@ export class Registry {
     this.#cache.set(initializer, registration);
 
     return registration;
+  }
+
+  protected isExposing<T extends Service>(
+    initializer: ServiceInitializer<T>
+  ): boolean {
+    return (
+      this.#config.expose === true ||
+      (Array.isArray(this.#config.expose) &&
+        this.#config.expose?.includes(initializer))
+    );
   }
 
   private getParentRegistry(): Registry | undefined {

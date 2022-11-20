@@ -83,10 +83,10 @@ import { useService } from "solid-services";
 import AuthService from "../services/auth";
 
 export default function LogoutComponent() {
-  const authService = useService(AuthService)
+  const getAuthService = useService(AuthService);
   
   function logout() {
-    authService().logout();  
+    getAuthService().logout();
   }
   
   return <button onClick={logout}>Logout<button>

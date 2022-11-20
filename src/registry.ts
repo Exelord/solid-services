@@ -28,7 +28,8 @@ export class Registry {
     if (
       parentRegistry &&
       (parentRegistry.config.expose === true ||
-        parentRegistry.config.expose?.includes(initializer))
+        (Array.isArray(parentRegistry.config.expose) &&
+          parentRegistry.config.expose?.includes(initializer)))
     ) {
       return parentRegistry.has(initializer);
     }
@@ -42,7 +43,8 @@ export class Registry {
     if (
       parentRegistry &&
       (parentRegistry.config.expose === true ||
-        parentRegistry.config.expose?.includes(initializer))
+        (Array.isArray(parentRegistry.config.expose) &&
+          parentRegistry.config.expose?.includes(initializer)))
     ) {
       return parentRegistry.get(initializer);
     }
@@ -60,7 +62,8 @@ export class Registry {
     if (
       parentRegistry &&
       (parentRegistry.config.expose === true ||
-        parentRegistry.config.expose?.includes(initializer))
+        (Array.isArray(parentRegistry.config.expose) &&
+          parentRegistry.config.expose?.includes(initializer)))
     ) {
       return parentRegistry.register(initializer);
     }

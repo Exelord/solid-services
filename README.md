@@ -4,22 +4,12 @@
 
 # Solid Services
 
-Services are "global" objects useful for features that require shared state or persistent connections. They are lazy evaluated, only when used, solving an issue of cross dependencies and contexts tree.
-
-Example uses of services might include:
-
-- User/session authentication
-- Geolocation
-- WebSockets
-- Server-sent events or notifications
-- Server-backed API calls libraries
-- Third-party APIs
-- Logging
+Solid Services is a package that provides a way to manage shared state and persistent connections in Solid.js applications. It consists of a `ServiceRegistry` component, which creates a context around your components and allows you to scope the services to specific parts of the application, and the `useService` hook, which registers a service or returns an existing object if it has already been used in the past.
 
 ## Installation
 
-```
-npm i solid-services
+```sh
+npm install solid-services
 ```
 
 ## Compatibility
@@ -30,29 +20,83 @@ npm i solid-services
 
 [Open on CodeSandbox](https://codesandbox.io/s/solid-services-uqlnw)
 
-## Using a ServiceRegistry
+## Service Registry
 
-`ServiceRegistry` will create a context around your components allowing you to scope the services to specific part of the application.
+The `ServiceRegistry` is a component that creates a context around the components within an application, allowing developers to scope the services to specific parts of the application.
 
-```tsx
-// app.tsx
+To use the `ServiceRegistry`, you can simply wrap the components that you want to be within the context of the registry in a <ServiceRegistry> element. For example:
+
+```jsx
 import { ServiceRegistry } from 'solid-services';
 
-export default App(props) {
+export default function App() {
   return (
     <ServiceRegistry>
-      {props.children}
+      {/* All components within this element will have access to the services defined in this registry */}
+      <SomeComponent />
+      <AnotherComponent />
     </ServiceRegistry>
-  )
+  );
 }
 ```
 
-## Defining a service
+> ## **Remember!**
+> 
+> It is important to wrap your application with a top-level `<ServiceRegistry>` before using services in components. Otherwise, services won't be able to register and their usage will throw an error.
 
-To define a service define a function that returns an instance of a class or a POJO object.
+By default, the ServiceRegistry does not expose any services to sub-registries. This means that the components within a sub-registry will not have access to the services defined in the parent registry. However, you can configure this behavior using the `expose` property of the ServiceRegistry.
 
-```ts
-// eg. ./services/auth.ts
+For example, to expose a specific service to a sub-registry, you can set the `expose` property to an array containing the service(s) that you want to expose:
+
+```jsx
+import { ServiceRegistry } from 'solid-services';
+import AuthService from './services/auth';
+
+export default function App() {
+  return (
+    <ServiceRegistry expose={[AuthService]}>
+      {/* All components within this element will have access
+          to all the services defined in this registry */}
+      
+      <ServiceRegistry>
+        {/* All components within this element will have access
+            to the AuthService from the parent registry,
+            as well as any services defined in this registry */}
+      </ServiceRegistry>
+    </ServiceRegistry>
+  );
+}
+```
+
+You can also set the `expose` property to `true` to expose all services to sub-registries. This can be useful if you want to granularly control the availability of services in different parts of your application.
+
+```jsx
+import { ServiceRegistry } from 'solid-services';
+
+export default function App() {
+  return (
+    <ServiceRegistry expose={true}>
+      {/* All components within this element will have access to the services defined in this registry */}
+      
+      <ServiceRegistry>
+        {/* All components within this element will have access to all services from the parent registry,
+            as well as any services defined in this registry */}
+      </ServiceRegistry>
+    </ServiceRegistry>
+  );
+}
+```
+
+By using the ServiceRegistry and the expose property, you can control which services are available to different parts of your application, and manage the shared state and persistent connections within your Solid.js application.
+
+## Services
+
+Service is an object that provides a particular function or set of functions. Services are designed to be "global" objects that can be accessed and used throughout an application, and are often used for features that require shared state or persistent connections.
+
+Some common examples of services include user authentication, geolocation, WebSockets, server-sent events or notifications, server-backed API call libraries, third-party APIs, and logging. Services can be implemented as either a class or a plain object (POJO) and are usually defined as a function that returns an instance of the class or object. For example:
+
+```js
+import { createSignal } from 'solid-js';
 
 export function AuthService() {
   const [getUser, setUser] = createSignal();
@@ -67,94 +111,25 @@ export function AuthService() {
     },
 
     logout() {
-      setUser(undefined)
+      setUser(undefined);
     },
-  }
+  };
 }
 ```
 
-## Accessing a service
+To access a service in your components or other services, you can use the `useService` hook. This hook registers the service or returns an existing object if it has already been used in the past. For example:
 
-To access a service in your components or other services use `useService()`. It will register a service or return existing object if it was already used in the past.
-
-```tsx
-// components/logout.tsx
+```jsx
 import { useService } from "solid-services";
-import AuthService from "../services/auth";
+import AuthService from "./services/auth";
 
 export default function LogoutComponent() {
   const getAuthService = useService(AuthService);
-  
+
   function logout() {
     getAuthService().logout();
   }
-  
-  return <button onClick={logout}>Logout<button>
-}
-```
 
-## Exposing services to sub registries
-
-By default registry does not expose any services to sub registries. It means that they cannot access or use services from the parent registry. You can configure this behavior by using `expose` property of `ServiceRegistry` and choose which services should be shared with sub registries.
-
-Example of isolated services:
-
-```tsx
-import { ServiceRegistry } from 'solid-services';
-
-export default App() {
-  return (
-    <ServiceRegistry>
-      // Here you can access all services defined in this registry
-
-      <ServiceRegistry>
-        // Here you cannot access services defined in the parent registry
-      <ServiceRegistry>
-    </ServiceRegistry>
-  )
-}
-```
-
-Example of exposed services:
-
-```tsx
-import { ServiceRegistry } from 'solid-services';
-import AuthService from "../services/auth";
-
-export default App() {
-  return (
-    <ServiceRegistry expose={[AuthService]}>
-      // Here you can access all services defined in this registry
-
-      <ServiceRegistry>
-        // Here you can access services defined in this registry + the AuthService from parent registry
-      <ServiceRegistry>
-    </ServiceRegistry>
-  )
-}
-```
-
-You can also set the `expose` to `true` to expose all services to sub-registries.
-It can be useful to granularly control services between different areas.
-
-```tsx
-import { ServiceRegistry } from 'solid-services';
-import AuthService from "../services/auth";
-
-export default App() {
-  return (
-    <ServiceRegistry expose={true}>
-      // Here you can access all services defined in this registry
-
-      <ServiceRegistry>
-        // Here you will access directly parent registry making this registry just a proxy to a parent
-        // Use case: In case the parent registry will not exist, you can make sure to be able to use services
-      <ServiceRegistry>
-
-      <ServiceRegistry expose={[AuthService]}>
-        // In this context you will have an access to AuthService and any other service will be isolated
-      <ServiceRegistry>
-    </ServiceRegistry>
-  )
+  return <button onClick={logout}>Logout</button>;
 }
 ```

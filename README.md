@@ -20,6 +20,51 @@ npm install solid-services
 
 [Open on CodeSandbox](https://codesandbox.io/s/solid-services-uqlnw)
 
+## Services
+
+Service is an object that provides a particular function or set of functions. Services are designed to be "global" objects that can be accessed and used throughout an application, and are often used for features that require shared state or persistent connections.
+
+Some common examples of services include user authentication, geolocation, WebSockets, server-sent events or notifications, server-backed API call libraries, third-party APIs, and logging. Services can be implemented as either a class or a plain object (POJO) and are usually defined as a function that returns an instance of the class or object. For example:
+
+```js
+import { createSignal } from 'solid-js';
+
+export function AuthService() {
+  const [getUser, setUser] = createSignal();
+
+  return {
+    get user() {
+      return getUser();
+    },
+
+    login(user) {
+      setUser(user);
+    },
+
+    logout() {
+      setUser(undefined);
+    },
+  };
+}
+```
+
+To access a service in your components or other services, you can use the `useService` hook. This hook registers the service or returns an existing object if it has already been used in the past. For example:
+
+```jsx
+import { useService } from "solid-services";
+import AuthService from "./services/auth";
+
+export default function LogoutComponent() {
+  const getAuthService = useService(AuthService);
+
+  function logout() {
+    getAuthService().logout();
+  }
+
+  return <button onClick={logout}>Logout</button>;
+}
+```
+
 ## Service Registry
 
 The `ServiceRegistry` is a component that creates a context around the components within an application, allowing developers to scope the services to specific parts of the application.
@@ -41,7 +86,7 @@ export default function App() {
 ```
 
 > ## **Remember!**
-> 
+>
 > It is important to wrap your application with a top-level `<ServiceRegistry>` before using services in components. Otherwise, services won't be able to register and their usage will throw an error.
 
 By default, the ServiceRegistry does not expose any services to sub-registries. This means that the components within a sub-registry will not have access to the services defined in the parent registry. However, you can configure this behavior using the `expose` property of the ServiceRegistry.
@@ -88,48 +133,3 @@ export default function App() {
 ```
 
 By using the ServiceRegistry and the expose property, you can control which services are available to different parts of your application, and manage the shared state and persistent connections within your Solid.js application.
-
-## Services
-
-Service is an object that provides a particular function or set of functions. Services are designed to be "global" objects that can be accessed and used throughout an application, and are often used for features that require shared state or persistent connections.
-
-Some common examples of services include user authentication, geolocation, WebSockets, server-sent events or notifications, server-backed API call libraries, third-party APIs, and logging. Services can be implemented as either a class or a plain object (POJO) and are usually defined as a function that returns an instance of the class or object. For example:
-
-```js
-import { createSignal } from 'solid-js';
-
-export function AuthService() {
-  const [getUser, setUser] = createSignal();
-
-  return {
-    get user() {
-      return getUser();
-    },
-
-    login(user) {
-      setUser(user);
-    },
-
-    logout() {
-      setUser(undefined);
-    },
-  };
-}
-```
-
-To access a service in your components or other services, you can use the `useService` hook. This hook registers the service or returns an existing object if it has already been used in the past. For example:
-
-```jsx
-import { useService } from "solid-services";
-import AuthService from "./services/auth";
-
-export default function LogoutComponent() {
-  const getAuthService = useService(AuthService);
-
-  function logout() {
-    getAuthService().logout();
-  }
-
-  return <button onClick={logout}>Logout</button>;
-}
-```

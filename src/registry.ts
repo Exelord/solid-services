@@ -45,6 +45,10 @@ export class Registry {
     this.#cache.clear();
   }
 
+  delete<T extends Service>(initializer: ServiceInitializer<T>): void {
+    this.#cache.delete(initializer);
+  }
+
   register<T extends Service>(initializer: ServiceInitializer<T>): T {
     const parentRegistry = this.getParentRegistry();
 

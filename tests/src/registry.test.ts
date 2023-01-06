@@ -30,6 +30,22 @@ describe("createRegistry", () => {
     expect(spy).toBeCalledTimes(1);
   });
 
+  test("deletes a registered service", () => {
+    const MyService = () => {
+      return { my: "service" };
+    };
+
+    const registry = createRegistry();
+
+    registry.register(MyService);
+
+    expect(registry.has(MyService)).toBe(true);
+
+    registry.delete(MyService);
+
+    expect(registry.has(MyService)).toBe(false);
+  });
+
   test("check if service is already registered", () => {
     const MyService = () => {
       return { my: "service" };

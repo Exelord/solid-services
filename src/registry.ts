@@ -1,4 +1,10 @@
-import { getOwner, runWithOwner, useContext } from "solid-js";
+import {
+  getOwner,
+  runWithOwner,
+  useContext,
+  createRoot,
+  onCleanup,
+} from "solid-js";
 import { Owner } from "solid-js/types/reactive/signal";
 import { ServiceRegistryContext } from "./context";
 
@@ -10,21 +16,23 @@ export interface RegistryConfig {
   expose?: ServiceInitializer<any>[] | boolean;
 }
 
-function runInOwner<T>(owner: Owner, fn: () => T): T {
+function runInOwner<T>(owner: Owner, fn: () => T) {
   let error;
   let hasErrored = false;
 
-  const result = runWithOwner(owner, () => {
+  const result = createRoot((dispose) => {
     try {
+      runWithOwner(owner, () => onCleanup(dispose));
       return fn();
     } catch (e) {
+      dispose();
       hasErrored = true;
       error = e;
       return;
     }
-  })!;
+  }, owner);
 
-  if (hasErrored) throw error;
+  if (hasErrored) throw error; // We need to throw error here in order to stop further execution of parent function
 
   return result;
 }

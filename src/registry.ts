@@ -10,6 +10,25 @@ export interface RegistryConfig {
   expose?: ServiceInitializer<any>[] | boolean;
 }
 
+function runInOwner<T>(owner: Owner, fn: () => T): T {
+  let error;
+  let hasErrored = false;
+
+  const result = runWithOwner(owner, () => {
+    try {
+      return fn();
+    } catch (e) {
+      hasErrored = true;
+      error = e;
+      return;
+    }
+  })!;
+
+  if (hasErrored) throw error;
+
+  return result;
+}
+
 export class Registry {
   #owner: Owner | null;
   #config: RegistryConfig;
@@ -57,7 +76,7 @@ export class Registry {
     }
 
     const registration = this.#owner
-      ? runWithOwner(this.#owner, () => initializer())
+      ? runInOwner(this.#owner, initializer)
       : initializer();
 
     this.#cache.set(initializer, registration);
@@ -77,7 +96,7 @@ export class Registry {
 
   private getParentRegistry(): Registry | undefined {
     return this.#owner
-      ? runWithOwner(this.#owner, () => {
+      ? runInOwner(this.#owner, () => {
           return useContext(ServiceRegistryContext);
         })
       : undefined;

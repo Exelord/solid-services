@@ -1,12 +1,6 @@
-import {
-  Owner,
-  getOwner,
-  runWithOwner,
-  useContext,
-  createRoot,
-  onCleanup,
-} from "solid-js";
+import { Owner, getOwner, useContext } from "solid-js";
 import { ServiceRegistryContext } from "./context";
+import { runInSubRoot } from "./utils";
 
 export interface Service extends Record<any, any> {}
 
@@ -14,32 +8,6 @@ export type ServiceInitializer<T extends Service> = () => T;
 
 export interface RegistryConfig {
   expose?: ServiceInitializer<any>[] | boolean;
-}
-
-function runInOwner<T>(owner: Owner, fn: () => T): T {
-  let error;
-  let hasErrored = false;
-
-  const result = runWithOwner(owner, () => {
-    let disposer: () => void;
-    onCleanup(() => disposer?.());
-
-    return createRoot((dispose) => {
-      disposer = dispose;
-      try {
-        return fn();
-      } catch (e) {
-        dispose();
-        hasErrored = true;
-        error = e;
-        return;
-      }
-    }, owner);
-  })!;
-
-  if (hasErrored) throw error;
-
-  return result;
 }
 
 export class Registry {
@@ -89,7 +57,7 @@ export class Registry {
     }
 
     const registration = this.#owner
-      ? runInOwner(this.#owner, initializer)
+      ? runInSubRoot(initializer, this.#owner)
       : initializer();
 
     this.#cache.set(initializer, registration);
@@ -109,9 +77,13 @@ export class Registry {
 
   private getParentRegistry(): Registry | undefined {
     return this.#owner
-      ? runInOwner(this.#owner, () => {
-          return useContext(ServiceRegistryContext);
-        })
+      ? runInSubRoot(
+          () => {
+            return useContext(ServiceRegistryContext);
+          },
+          this.#owner,
+          true
+        )
       : undefined;
   }
 }

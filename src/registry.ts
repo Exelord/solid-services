@@ -77,13 +77,11 @@ export class Registry {
 
   private getParentRegistry(): Registry | undefined {
     return this.#owner
-      ? runInSubRoot(
-          () => {
-            return useContext(ServiceRegistryContext);
-          },
-          this.#owner,
-          true
-        )
+      ? runInSubRoot((dispose) => {
+          const context = useContext(ServiceRegistryContext);
+          dispose();
+          return context;
+        }, this.#owner)
       : undefined;
   }
 }

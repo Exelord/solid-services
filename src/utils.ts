@@ -1,11 +1,4 @@
-import {
-  createRoot,
-  Owner,
-  runWithOwner,
-  onCleanup,
-  getOwner,
-  onError,
-} from "solid-js";
+import { createRoot, Owner, runWithOwner, onCleanup, getOwner } from "solid-js";
 
 function createSubRoot<T>(
   fn: Parameters<typeof createRoot<T>>[0],
@@ -19,17 +12,24 @@ function createSubRoot<T>(
 
 export function runInSubRoot<T>(
   fn: Parameters<typeof createRoot<T>>[0],
-  owner?: typeof Owner,
-  cleanup = false
+  owner?: typeof Owner
 ): T {
-  return createSubRoot((dispose) => {
-    onError((error) => {
-      dispose();
-      throw error;
-    });
+  let error: unknown;
+  let hasError = false;
 
-    const result = fn(dispose);
-    if (cleanup) dispose();
-    return result;
+  const result = createSubRoot((dispose) => {
+    try {
+      return fn(dispose);
+    } catch (e) {
+      hasError = true;
+      error = e;
+      throw e;
+    }
   }, owner);
+
+  if (hasError) {
+    throw error;
+  }
+
+  return result;
 }

@@ -23,6 +23,7 @@ export function runInSubRoot<T>(
     } catch (e) {
       hasError = true;
       error = e;
+      dispose();
       throw e;
     }
   }, owner);

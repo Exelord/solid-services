@@ -28,6 +28,11 @@ export const ServiceRegistry: FlowComponent<RegistryProviderProps> = (props) => 
   });
 };
 
+/**
+ * Returns the current registry.
+ * 
+ * If no registry is found, it will throw an error.
+ */
 export function useRegistry(): Registry {
   const registry = useContext(ServiceRegistryContext);
 

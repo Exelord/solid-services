@@ -10,6 +10,10 @@ export interface RegistryConfig {
   expose?: ServiceInitializer<any>[] | boolean;
 }
 
+/**
+ * Registry is a container for services.
+ * It is used to register and retrieve services.
+ */
 export class Registry {
   #owner: Owner | null;
   #config: RegistryConfig;
@@ -21,6 +25,12 @@ export class Registry {
     this.#cache = new Map<ServiceInitializer<any>, any>();
   }
 
+  /**
+   * Checks weather the registry has a service registered for the given initializer.
+   *
+   * First it will check in the parent registry and if no service is registered there,
+   * it will check in the current registry.
+   */
   has<T extends Service>(initializer: ServiceInitializer<T>): boolean {
     const parentRegistry = this.getParentRegistry();
 
@@ -31,6 +41,12 @@ export class Registry {
     return this.#cache.has(initializer);
   }
 
+  /**
+   * Returns the service registered for the given initializer.
+   *
+   * First it will try to find it in the parent registry and if no service is registered there,
+   * it will check in the current registry.
+   */
   get<T extends Service>(initializer: ServiceInitializer<T>): T | undefined {
     const parentRegistry = this.getParentRegistry();
 
@@ -41,14 +57,31 @@ export class Registry {
     return this.#cache.get(initializer);
   }
 
+  /**
+   * Clears the registry.
+   */
   clear(): void {
     this.#cache.clear();
   }
 
+  /**
+   * Deletes registered service for the given initializer.
+   */
   delete<T extends Service>(initializer: ServiceInitializer<T>): void {
     this.#cache.delete(initializer);
   }
 
+  /**
+   * Registers a service for the given initializer.
+   *
+   * If the registry has a parent registry, it will check if the service is exposed there.
+   *
+   * If it is exposed, it will register the service in the parent registry.
+   *
+   * If it is not exposed, it will register the service in the current registry.
+   *
+   * If the registry does not have a parent registry, it will register the service in the current registry.
+   */
   register<T extends Service>(initializer: ServiceInitializer<T>): T {
     const parentRegistry = this.getParentRegistry();
 
@@ -86,6 +119,9 @@ export class Registry {
   }
 }
 
+/**
+ * Creates a new registry for services.
+ */
 export function createRegistry(config?: RegistryConfig): Registry {
   return new Registry(config);
 }

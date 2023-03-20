@@ -71,7 +71,7 @@
     "solid-js": "^1.6.11",
     "typescript": "^4.9.5",
     "vite": "^4.1.1",
-    "vitest": "^0.28.5"
+    "vitest": "^0.29.3"
   },
   "peerDependencies": {
     "solid-js": "^1.0.0"

@@ -21,14 +21,15 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/index.cjs.js",
-  "module": "./dist/index.es.js",
+  "main": "./dist/solid-services.cjs",
+  "module": "./dist/solid-services.js",
   "types": "./dist/types/index.d.ts",
   "source": "./dist/src/index.js",
   "sideEffects": false,
   "type": "module",
   "exports": {
     ".": {
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/solid-services.js",
       "require": "./dist/solid-services.cjs"
     }
@@ -64,14 +65,14 @@
     }
   },
   "devDependencies": {
-    "@vitest/ui": "^0.28.5",
-    "c8": "^7.12.0",
+    "@vitest/ui": "^0.29.8",
+    "c8": "^7.13.0",
     "npm-run-all": "^4.1.5",
-    "release-it": "^15.6.0",
-    "solid-js": "^1.6.11",
-    "typescript": "^4.9.5",
-    "vite": "^4.1.1",
-    "vitest": "^0.28.5"
+    "release-it": "^15.10.0",
+    "solid-js": "^1.7.1",
+    "typescript": "^5.0.3",
+    "vite": "^4.2.1",
+    "vitest": "^0.29.8"
   },
   "peerDependencies": {
     "solid-js": "^1.0.0"

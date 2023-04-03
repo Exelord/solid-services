@@ -13,6 +13,22 @@ describe("createRegistry", () => {
     expect(myService).toMatchObject({ my: "service" });
   });
 
+  test("registers a class service", () => {
+    class Auth {
+      loggedIn = true;
+    }
+
+    function AuthService() {
+      return new Auth();
+    }
+
+    const registry = createRegistry();
+    const myService = registry.register(AuthService);
+
+    expect(myService).toBeInstanceOf(Auth);
+    expect(myService.loggedIn).toBe(true);
+  });
+
   test("gets already registered service", () => {
     const spy = vi.fn();
 

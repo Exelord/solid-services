@@ -2,9 +2,13 @@ import { Owner, getOwner, useContext } from "solid-js";
 import { ServiceRegistryContext } from "./context";
 import { runInSubRoot } from "./utils";
 
-export interface Service extends Record<any, any> {}
+export class Service {}
 
-export type ServiceInitializer<T extends Service> = () => T;
+type ServiceConstructor<T extends Service> = new () => T;
+
+export type ServiceInitializer<T extends Service> =
+  | (() => T)
+  | ServiceConstructor<T>;
 
 export interface RegistryConfig {
   expose?: ServiceInitializer<any>[] | boolean;
@@ -90,8 +94,8 @@ export class Registry {
     }
 
     const registration = this.#owner
-      ? runInSubRoot(initializer, this.#owner)
-      : initializer();
+      ? runInSubRoot(() => this.initializeService(initializer), this.#owner)
+      : this.initializeService(initializer);
 
     this.#cache.set(initializer, registration);
 
@@ -116,6 +120,14 @@ export class Registry {
           return context;
         }, this.#owner)
       : undefined;
+  }
+
+  private initializeService<T extends Service>(
+    initializer: ServiceInitializer<T>
+  ): T {
+    return initializer.prototype?.constructor
+      ? Reflect.construct(initializer, [])
+      : initializer();
   }
 }
 

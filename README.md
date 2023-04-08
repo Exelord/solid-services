@@ -48,6 +48,30 @@ export function AuthService() {
 }
 ```
 
+You can also define a service using a class:
+
+```js
+import { Service } from 'solid-services';
+
+export class AuthService extends Service {
+  @signal #user; // Decorators not included in solid-services
+
+  get user() {
+    return this.#user;
+  }
+
+  @action
+  login(user) {
+    this.#user = user;
+  }
+
+  @action
+  logout() {
+    this.#user = undefined;
+  }
+}
+```
+
 To access a service in your components or other services, you can use the `useService` hook. This hook registers the service or returns an existing object if it has already been used in the past. For example:
 
 ```jsx

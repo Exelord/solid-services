@@ -14,18 +14,14 @@ describe("createRegistry", () => {
   });
 
   test("registers a class service", () => {
-    class Auth {
+    class AuthService {
       loggedIn = true;
-    }
-
-    function AuthService() {
-      return new Auth();
     }
 
     const registry = createRegistry();
     const myService = registry.register(AuthService);
 
-    expect(myService).toBeInstanceOf(Auth);
+    expect(myService).toBeInstanceOf(AuthService);
     expect(myService.loggedIn).toBe(true);
   });
 

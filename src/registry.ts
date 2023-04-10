@@ -4,10 +4,11 @@ import { runInSubRoot } from "./utils";
 
 export class Service {}
 
+type ServiceFunction<T extends Service> = () => T;
 type ServiceConstructor<T extends Service> = new () => T;
 
 export type ServiceInitializer<T extends Service> =
-  | (() => T)
+  | ServiceFunction<T>
   | ServiceConstructor<T>;
 
 export interface RegistryConfig {
@@ -127,7 +128,7 @@ export class Registry {
   ): T {
     return initializer.prototype?.constructor
       ? Reflect.construct(initializer, [])
-      : initializer();
+      : (initializer as ServiceFunction<T>)();
   }
 }
 

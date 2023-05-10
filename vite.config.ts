@@ -13,4 +13,7 @@ export default defineConfig({
       external: ["solid-js"],
     },
   },
+  resolve: {
+    conditions: ["browser"],
+  },
 });

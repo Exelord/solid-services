@@ -15,12 +15,16 @@ export type RegistryProviderProps = {
 export const ServiceRegistryContext = createContext<Registry>();
 
 export const ServiceRegistry: FlowComponent<RegistryProviderProps> = (props) => {
+  let registry: Registry | undefined;
+
   return createComponent(ServiceRegistryContext.Provider, {
-    value: createRegistry({
-      get expose() {
-        return props.expose;
-      },
-    }),
+    get value() {
+      return (registry ??= createRegistry({
+        get expose() {
+          return props.expose;
+        },
+      }));
+    },
 
     get children() {
       return props.children;

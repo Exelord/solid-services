@@ -94,9 +94,10 @@ export class Registry {
       return parentRegistry.register(initializer);
     }
 
-    const registration = this.#owner
-      ? runInSubRoot(() => this.initializeService(initializer), this.#owner)
-      : this.initializeService(initializer);
+    const registration = runInSubRoot(
+      () => this.initializeService(initializer),
+      this.#owner
+    );
 
     this.#cache.set(initializer, registration);
 
@@ -114,12 +115,12 @@ export class Registry {
   }
 
   private getParentRegistry(): Registry | undefined {
-    return this.#owner
+    return this.#owner?.owner
       ? runInSubRoot((dispose) => {
           const context = useContext(ServiceRegistryContext);
           dispose();
           return context;
-        }, this.#owner)
+        }, this.#owner.owner)
       : undefined;
   }
 

@@ -89,6 +89,10 @@ export default function LogoutComponent() {
 }
 ```
 
+### How does services differ from using just a context?
+
+Solid Services is built on top of the Solid.js context API, but it provides the opposite of how context works. While context gives you access to the closest data provider, Solid Services gives you access to the furthest available provider. This means you opt-in to use a "global" shared service, instead of nearest encapsulated provider, while maintaining full access control of downstream data.
+
 ## Service Registry
 
 The `ServiceRegistry` is a component that creates a context around the components within an application, allowing developers to scope the services to specific parts of the application.

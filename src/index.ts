@@ -1,3 +1,3 @@
-export * from "./registry";
-export * from "./context";
-export * from "./service";
+export * from "#src/registry.ts";
+export * from "#src/context.ts";
+export * from "#src/service.ts";

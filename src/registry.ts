@@ -1,17 +1,40 @@
-import { Owner, getOwner, useContext } from "solid-js";
-import { ServiceRegistryContext } from "./context";
-import { runInSubRoot } from "./utils";
+import { type Owner, getOwner, useContext } from "solid-js";
 
+import { ServiceRegistryContext } from "#src/context.ts";
+import { runInSubRoot } from "#src/utils.ts";
+
+/**
+ * Base type for all services. Used purely as a structural marker so that
+ * service initializers can be typed against a common shape.
+ */
 export class Service {}
 
 type ServiceFunction<T extends Service> = () => T;
 type ServiceConstructor<T extends Service> = new () => T;
 
-export type ServiceInitializer<T extends Service> =
-  | ServiceFunction<T>
-  | ServiceConstructor<T>;
+function isServiceConstructor<T extends Service>(
+  initializer: ServiceInitializer<T>,
+): initializer is ServiceConstructor<T> {
+  return Boolean(initializer.prototype?.constructor);
+}
 
+/**
+ * A service initializer is either a plain factory function or a class constructor.
+ * The registry will call it (or `new` it) the first time the service is requested.
+ */
+export type ServiceInitializer<T extends Service> = ServiceFunction<T> | ServiceConstructor<T>;
+
+/**
+ * Configuration options for a {@link Registry}.
+ */
 export interface RegistryConfig {
+  /**
+   * Controls which services this registry exposes to child registries.
+   *
+   * - `true` exposes every service registered here.
+   * - An array exposes only the listed initializers.
+   * - `false` / omitted keeps services local to this registry.
+   */
   expose?: ServiceInitializer<any>[] | boolean;
 }
 
@@ -94,23 +117,17 @@ export class Registry {
       return parentRegistry.register(initializer);
     }
 
-    const registration = runInSubRoot(
-      () => this.initializeService(initializer),
-      this.#owner
-    );
+    const registration = runInSubRoot(() => this.initializeService(initializer), this.#owner);
 
     this.#cache.set(initializer, registration);
 
     return registration;
   }
 
-  protected isExposing<T extends Service>(
-    initializer: ServiceInitializer<T>
-  ): boolean {
+  protected isExposing<T extends Service>(initializer: ServiceInitializer<T>): boolean {
     return (
       this.#config.expose === true ||
-      (Array.isArray(this.#config.expose) &&
-        this.#config.expose?.includes(initializer))
+      (Array.isArray(this.#config.expose) && this.#config.expose?.includes(initializer))
     );
   }
 
@@ -124,12 +141,8 @@ export class Registry {
       : undefined;
   }
 
-  private initializeService<T extends Service>(
-    initializer: ServiceInitializer<T>
-  ): T {
-    return initializer.prototype?.constructor
-      ? Reflect.construct(initializer, [])
-      : (initializer as ServiceFunction<T>)();
+  private initializeService<T extends Service>(initializer: ServiceInitializer<T>): T {
+    return isServiceConstructor(initializer) ? Reflect.construct(initializer, []) : initializer();
   }
 }
 

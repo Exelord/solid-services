@@ -1,7 +1,8 @@
-import { describe, test, expect, vi } from "vitest";
 import { createComponent } from "solid-js";
-import { useService } from "../../src/service";
-import { ServiceRegistry } from "../../src/context";
+import { describe, test, expect, vi } from "vite-plus/test";
+
+import { ServiceRegistry } from "#src/context.ts";
+import { useService } from "#src/service.ts";
 
 describe("useService", () => {
   test("registers a service if it does not exist", () => {

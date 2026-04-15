@@ -1,6 +1,7 @@
-import { describe, test, expect } from "vitest";
 import { createComponent } from "solid-js";
-import { ServiceRegistry, useRegistry } from "../../src/context";
+import { describe, test, expect } from "vite-plus/test";
+
+import { ServiceRegistry, useRegistry } from "#src/context.ts";
 
 describe("ServiceRegistry", () => {
   test("allows to expose selected services", () => {
@@ -128,7 +129,7 @@ describe("ServiceRegistry", () => {
   test("throws error when used without the registry provider", () => {
     const MyComponent = () => {
       expect(() => useRegistry()).toThrowError(
-        "Your app needs to be wrapped with <ServiceRegistry> context in order to use services."
+        "Your app needs to be wrapped with <ServiceRegistry> context in order to use services.",
       );
 
       return undefined;

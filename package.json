@@ -1,51 +1,71 @@
 {
   "name": "solid-services",
-  "description": "Solid.js library adding a services layer for global shared state.",
   "version": "4.3.2",
-  "license": "MIT",
-  "homepage": "https://github.com/Exelord/solid-services",
-  "repository": "github:exelord/solid-services",
-  "info": "Services are global objects useful for features that require shared state or persistent connections. They are lazy evaluated, only when used, solving an issue of cross dependencies and contexts tree.",
+  "description": "Solid.js library adding a services layer for global shared state.",
   "keywords": [
-    "solidhack",
-    "best_ecosystem",
     "solidjs"
   ],
-  "contributors": [
-    {
-      "name": "Maciej Kwaśniak",
-      "email": "contact@exelord.com",
-      "url": "https://exelord.com"
-    }
-  ],
+  "homepage": "https://github.com/Exelord/solid-services",
+  "license": "MIT",
+  "repository": "github:exelord/solid-services",
+  "source": "./dist/src/index.js",
   "files": [
     "dist"
   ],
-  "main": "./dist/solid-services.cjs",
-  "module": "./dist/solid-services.js",
-  "types": "./dist/types/index.d.ts",
-  "source": "./dist/src/index.js",
-  "sideEffects": false,
   "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#src/*": "./src/*"
+  },
   "exports": {
+    "./package.json": "./package.json",
     ".": {
       "types": "./dist/types/index.d.ts",
       "import": "./dist/solid-services.js",
       "require": "./dist/solid-services.cjs"
     }
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "coverage": "vitest run --coverage",
-    "prepublishOnly": "npm run build",
-    "dev": "npm-run-all --parallel 'build:** -- --watch'",
-    "build": "npm-run-all --parallel build:** && npm run types",
-    "build:js": "vite build",
-    "build:source": "tsc",
-    "types": "tsc --emitDeclarationOnly --declaration --outDir ./dist/types",
+    "test": "vp test run",
+    "test:watch": "vp test",
+    "test:ui": "vp test --ui",
+    "coverage": "vp test run --coverage",
+    "lint": "vp lint",
+    "lint:fix": "vp lint --fix",
+    "fmt": "vp fmt",
+    "fmt:check": "vp fmt --check",
+    "check": "vp check",
+    "prepublishOnly": "pnpm run build",
+    "build": "vp pack",
+    "dev": "vp pack --watch",
     "release": "release-it"
   },
+  "dependencies": {
+    "@solid-primitives/rootless": "^1.5.3"
+  },
+  "devDependencies": {
+    "@vitest/ui": "^4.1.4",
+    "release-it": "^19.2.4",
+    "solid-js": "^1.9.12",
+    "typescript": "^6.0.2",
+    "vite": "catalog:",
+    "vite-plus": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "solid-js": "^1.0.0"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "^24.14.1",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@10.33.0",
   "release-it": {
     "git": {
       "commitMessage": "v${version}",
@@ -60,21 +80,8 @@
     },
     "hooks": {
       "before:init": [
-        "npm test -- --run"
+        "pnpm test"
       ]
     }
-  },
-  "devDependencies": {
-    "@vitest/ui": "^2.0.5",
-    "c8": "^10.1.2",
-    "npm-run-all": "^4.1.5",
-    "release-it": "^17.6.0",
-    "solid-js": "^1.8.22",
-    "typescript": "^5.5.4",
-    "vite": "^5.4.3",
-    "vitest": "^2.0.5"
-  },
-  "peerDependencies": {
-    "solid-js": "^1.0.0"
   }
 }

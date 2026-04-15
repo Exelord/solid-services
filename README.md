@@ -9,7 +9,7 @@ Solid Services is a package that provides a way to manage shared state and persi
 ## Installation
 
 ```sh
-npm install solid-services
+pnpm add solid-services
 ```
 
 ## Compatibility
@@ -27,7 +27,7 @@ Service is an object that provides a particular function or set of functions. Se
 Some common examples of services include user authentication, geolocation, WebSockets, server-sent events or notifications, server-backed API call libraries, third-party APIs, and logging. Services can be implemented as either a class or a plain object (POJO) and are usually defined as a function that returns an instance of the class or object. For example:
 
 ```js
-import { createSignal } from 'solid-js';
+import { createSignal } from "solid-js";
 
 export function AuthService() {
   const [getUser, setUser] = createSignal();
@@ -51,7 +51,7 @@ export function AuthService() {
 You can also define a service using a class:
 
 ```js
-import { Service } from 'solid-services';
+import { Service } from "solid-services";
 
 export class AuthService extends Service {
   @signal #user; // Decorators not included in solid-services
@@ -100,7 +100,7 @@ The `ServiceRegistry` is a component that creates a context around the component
 To use the `ServiceRegistry`, you can simply wrap the components that you want to be within the context of the registry in a <ServiceRegistry> element. For example:
 
 ```jsx
-import { ServiceRegistry } from 'solid-services';
+import { ServiceRegistry } from "solid-services";
 
 export default function App() {
   return (
@@ -122,15 +122,15 @@ By default, the ServiceRegistry does not expose any services to sub-registries. 
 For example, to expose a specific service to a sub-registry, you can set the `expose` property to an array containing the service(s) that you want to expose:
 
 ```jsx
-import { ServiceRegistry } from 'solid-services';
-import AuthService from './services/auth';
+import { ServiceRegistry } from "solid-services";
+import AuthService from "./services/auth";
 
 export default function App() {
   return (
     <ServiceRegistry expose={[AuthService]}>
       {/* All components within this element will have access
           to all the services defined in this registry */}
-      
+
       <ServiceRegistry>
         {/* All components within this element will have access
             to the AuthService from the parent registry,
@@ -144,13 +144,13 @@ export default function App() {
 You can also set the `expose` property to `true` to expose all services to sub-registries. This can be useful if you want to granularly control the availability of services in different parts of your application.
 
 ```jsx
-import { ServiceRegistry } from 'solid-services';
+import { ServiceRegistry } from "solid-services";
 
 export default function App() {
   return (
     <ServiceRegistry expose={true}>
       {/* All components within this element will have access to the services defined in this registry */}
-      
+
       <ServiceRegistry>
         {/* All components within this element will have access to all services from the parent registry,
             as well as any services defined in this registry */}

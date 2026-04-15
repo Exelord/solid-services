@@ -22,7 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-          registry-url: https://registry.npmjs.org/
       - run: pnpm i
       - run: pnpm publish
         env:

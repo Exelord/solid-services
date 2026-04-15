@@ -45,12 +45,12 @@ export interface RegistryConfig {
 export class Registry {
   #owner: Owner | null;
   #config: RegistryConfig;
-  #cache: Map<ServiceInitializer<any>, any>;
+  #cache: Map<ServiceInitializer<any>, { instance: any; dispose: () => void }>;
 
   constructor(config: RegistryConfig = {}) {
     this.#config = config;
     this.#owner = getOwner();
-    this.#cache = new Map<ServiceInitializer<any>, any>();
+    this.#cache = new Map();
   }
 
   /**
@@ -82,20 +82,24 @@ export class Registry {
       return parentRegistry.get(initializer);
     }
 
-    return this.#cache.get(initializer);
+    return this.#cache.get(initializer)?.instance;
   }
 
   /**
-   * Clears the registry.
+   * Clears the registry, disposing every registered service's sub-root.
    */
   clear(): void {
+    for (const entry of this.#cache.values()) entry.dispose();
     this.#cache.clear();
   }
 
   /**
-   * Deletes registered service for the given initializer.
+   * Deletes registered service for the given initializer and disposes its sub-root.
    */
   delete<T extends Service>(initializer: ServiceInitializer<T>): void {
+    const entry = this.#cache.get(initializer);
+    if (!entry) return;
+    entry.dispose();
     this.#cache.delete(initializer);
   }
 
@@ -117,11 +121,16 @@ export class Registry {
       return parentRegistry.register(initializer);
     }
 
-    const registration = runInSubRoot(() => this.initializeService(initializer), this.#owner);
+    this.#cache.get(initializer)?.dispose();
 
-    this.#cache.set(initializer, registration);
+    const { result: instance, dispose } = runInSubRoot(
+      () => this.initializeService(initializer),
+      this.#owner,
+    );
 
-    return registration;
+    this.#cache.set(initializer, { instance, dispose });
+
+    return instance;
   }
 
   protected isExposing<T extends Service>(initializer: ServiceInitializer<T>): boolean {
@@ -132,13 +141,13 @@ export class Registry {
   }
 
   private getParentRegistry(): Registry | undefined {
-    return this.#owner?.owner
-      ? runInSubRoot((dispose) => {
-          const context = useContext(ServiceRegistryContext);
-          dispose();
-          return context;
-        }, this.#owner.owner)
-      : undefined;
+    if (!this.#owner?.owner) return undefined;
+    const { result, dispose } = runInSubRoot(
+      () => useContext(ServiceRegistryContext),
+      this.#owner.owner,
+    );
+    dispose();
+    return result;
   }
 
   private initializeService<T extends Service>(initializer: ServiceInitializer<T>): T {

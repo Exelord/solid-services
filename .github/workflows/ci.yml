@@ -15,11 +15,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          check-latest: true
-          cache: "pnpm"
+      - uses: pnpm/action-setup@v4
       - run: pnpm i
       - run: pnpm run check
       - run: pnpm run build --if-present

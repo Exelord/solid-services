@@ -12,11 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          check-latest: true
-          cache: "pnpm"
+      - uses: pnpm/action-setup@v4
       - run: pnpm i
       - run: pnpm test
 
@@ -25,11 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          check-latest: true
-          cache: "pnpm"
+      - uses: pnpm/action-setup@v4
           registry-url: https://registry.npmjs.org/
       - run: pnpm i
       - run: pnpm publish

@@ -1,4 +1,4 @@
-import { createContext, createComponent, useContext, type FlowComponent } from "solid-js";
+import { createContext, createComponent, useContext } from "solid-js";
 
 import { createRegistry, type ServiceInitializer } from "#src/registry.ts";
 import type { Registry } from "#src/registry.ts";
@@ -23,7 +23,9 @@ export type RegistryProviderProps = {
  * Prefer using {@link useRegistry} or {@link ServiceRegistry} over reading
  * this context directly.
  */
-export const ServiceRegistryContext = createContext<Registry>();
+export const ServiceRegistryContext: import("solid-js", {
+  with: { "resolution-mode": "import" },
+}).Context<Registry | undefined> = createContext<Registry>();
 
 /**
  * Provider component that creates a new {@link Registry} and makes it
@@ -32,7 +34,9 @@ export const ServiceRegistryContext = createContext<Registry>();
  * Wrap your application (or a subtree) with this component to scope
  * services to that part of the tree.
  */
-export const ServiceRegistry: FlowComponent<RegistryProviderProps> = (props) => {
+export const ServiceRegistry: import("solid-js", {
+  with: { "resolution-mode": "import" },
+}).FlowComponent<RegistryProviderProps> = (props) => {
   let registry: Registry | undefined;
 
   return createComponent(ServiceRegistryContext.Provider, {

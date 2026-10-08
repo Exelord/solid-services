@@ -20,9 +20,14 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/solid-services.js",
-      "require": "./dist/solid-services.cjs"
+      "import": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/solid-services.js"
+      },
+      "require": {
+        "types": "./dist/types/index.d.cts",
+        "default": "./dist/solid-services.cjs"
+      }
     }
   },
   "publishConfig": {
@@ -47,7 +52,8 @@
     "@solid-primitives/rootless": "^1.5.3"
   },
   "devDependencies": {
-    "@vitest/ui": "^4.1.4",
+    "@vitest/coverage-v8": "catalog:",
+    "@vitest/ui": "catalog:",
     "release-it": "^19.2.4",
     "solid-js": "^1.9.12",
     "typescript": "^6.0.2",

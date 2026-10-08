@@ -76,6 +76,7 @@ To access a service in your components or other services, you can use the `useSe
 
 ```jsx
 import { useService } from "solid-services";
+
 import AuthService from "./services/auth";
 
 export default function LogoutComponent() {
@@ -123,6 +124,7 @@ For example, to expose a specific service to a sub-registry, you can set the `ex
 
 ```jsx
 import { ServiceRegistry } from "solid-services";
+
 import AuthService from "./services/auth";
 
 export default function App() {
